@@ -1,23 +1,20 @@
-# Use an official Node.js image
+# Використовуйте офіційний образ Node.js
 FROM node:14
 
-# Set the working directory
+# Встановіть додаткові залежності, такі як Chromium
+RUN apt-get update && apt-get install -y \
+  chromium \
+  && rm -rf /var/lib/apt/lists/*
+
+# Створіть та встановіть каталог робочого проекту
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
+# Скопіюйте package.json та package-lock.json та встановіть залежності
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Install TypeScript
-RUN npm install -g typescript
-
-# Copy the rest of your application code
+# Скопіюйте решту файлів вашого проекту в контейнер
 COPY . .
 
-# Expose the default Playwright port
-EXPOSE 4444
-
-# Command to run your Playwright tests
-CMD ["npx", "playwright", "test"]
+# Запустіть ваші тести в Docker-контейнері
+CMD ["npm", "test"]
