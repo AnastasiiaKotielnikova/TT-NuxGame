@@ -1,17 +1,23 @@
-# Використовуйте офіційний образ Node.js
+# Use an official Node.js image
 FROM node:14
 
-# Створіть робочий каталог в контейнері
+# Set the working directory
 WORKDIR /app
 
-# Скопіюйте файли проєкту у контейнер
-COPY package.json package-lock.json ./
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
 
-# Встановіть залежності
+# Install dependencies
 RUN npm install
 
-# Скопіюйте всі інші файли проєкту
+# Install TypeScript
+RUN npm install -g typescript
+
+# Copy the rest of your application code
 COPY . .
 
-# Запустіть тест в контейнері
-CMD ["npx", "test.spec.ts"]
+# Expose the default Playwright port
+EXPOSE 4444
+
+# Command to run your Playwright tests
+CMD ["npx", "playwright", "test"]

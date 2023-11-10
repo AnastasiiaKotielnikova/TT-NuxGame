@@ -1,3 +1,4 @@
+import { chromium, Page } from 'playwright';
 import { test, expect } from '@playwright/test';
 require('dotenv').config();
 
@@ -17,17 +18,17 @@ test('Wikipedia Login and Preferences', async ({ page }) => {
   await goToPreferences(page);
 });
 
-async function loginToWikipedia(page) {
+async function loginToWikipedia(page: Page) {
   await page.goto('https://www.wikipedia.org');
   await page.click('text=English');
   await page.click('text=Log in');
-  await page.fill('#wpName1', 'username');
-  await page.fill('#wpPassword1', 'password');
+  await page.fill('#wpName1', username);
+  await page.fill('#wpPassword1', password);
   await page.click('button:has-text("Log in")');
   await page.waitForLoadState('networkidle');
 }
 
-async function goToPreferences(page) {
+async function goToPreferences(page: Page) {
   await page.click('#vector-user-links-dropdown-checkbox');
   const preferencesLocator = page.locator('text=Preferences');
   const preferencesElements = await preferencesLocator.all();
@@ -41,9 +42,9 @@ async function goToPreferences(page) {
   await page.waitForLoadState('networkidle');
 
   // Вибір нової мови інтерфейсу ('Українська')
-  await page.evaluate(() => {
-    window.scrollBy(0, window.innerHeight); // Скрол до низу на один екран
-  });
+  // await page.evaluate(() => {
+  //   window.scrollTo(0, document.body.scrollHeight); // Скрол до низу на один екран
+  // });
   
   await page.click('text=More language settings');
   await page.click('[lang="uk"]');
